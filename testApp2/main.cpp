@@ -53,11 +53,23 @@ static void process_events(){
     }
 }
 
-static void draw_screen(void){
-
+static void draw_screen( void )
+{
+    /* Our angle of rotation. */
     static float angle = 0.0f;
 
-
+    /*
+     * EXERCISE:
+     * Replace this awful mess with vertex
+     * arrays and a call to glDrawElements.
+     *
+     * EXERCISE:
+     * After completing the above, change
+     * it to use compiled vertex arrays.
+     *
+     * EXERCISE:
+     * Verify my windings are correct here ;).
+     */
     static GLfloat v0[] = { -1.0f, -1.0f,  1.0f };
     static GLfloat v1[] = {  1.0f, -1.0f,  1.0f };
     static GLfloat v2[] = {  1.0f,  1.0f,  1.0f };
@@ -75,29 +87,17 @@ static void draw_screen(void){
     static GLubyte orange[] = { 255, 255,   0, 255 };
     static GLubyte purple[] = { 255,   0, 255,   0 };
 
-//    static GLfloat v0[] = { -1.0f, -1.0f,  1.0f};
-//    static GLfloat v1[] = {  1.0f, -1.0f,  1.0f};
-//    static GLfloat v2[] = {  1.0f,  1.0f,  1.0f};
-//    static GLfloat v3[] = { -1.0f,  1.0f,  1.0f};
-//    static GLfloat v4[] = { -1.0f, -1.0f, -1.0f};
-//    static GLfloat v5[] = {  1.0f, -1.0f, -1.0f};
-//    static GLfloat v6[] = {  1.0f,  1.0f, -1.0f};
-//    static GLfloat v7[] = { -1.0f,  1.0f, -1.0f};
-//
-//    static GLubyte red[]    = {255,     0,      0,      255};
-//    static GLubyte green[]  = {0,       255,    0,      255};
-//    static GLubyte blue[]   = {0,       0,      255,    255};
-//    static GLubyte white[]  = {255,     255,    255,    255};
-//    static GLubyte yellow[] = {0,       255,    255,    255};
-//    static GLubyte black[]  = {0,       0,      0,      255};
-//    static GLubyte orange[] = {255,     255,    0,      255};
-//    static GLubyte purple[] = {255,     0,      255,    0};
+    /* Clear the color and depth buffers. */
+    glClear( GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT );
 
-    glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-    glMatrixMode(GL_MODELVIEW);
-    glLoadIdentity();
-    glTranslatef(0.0, 0.0, -.5);
+
+    /* We don't want to modify the projection matrix. */
+    glMatrixMode( GL_MODELVIEW );
+    glLoadIdentity( );
+
+    /* Move down the z-axis. */
+    glTranslatef( 0.0, 0.0, -5.0 );
 
     glRotatef(angle, 0.0, 1.0, 0.0);
 
@@ -108,6 +108,32 @@ static void draw_screen(void){
     }
 
     glBegin(GL_TRIANGLES);
+//
+//    glColor4ubv(green);
+//    glVertex3fv(v0);
+//    glVertex3fv(v1);
+//    glVertex3fv(v2);
+//
+//    glVertex3fv(v0);
+//    glVertex3fv(v2);
+//    glVertex3fv(v3);
+//
+//    glVertex3fv(v1);
+//    glVertex3fv(v0);
+//    glVertex3fv(v4);
+//
+//    glColor4ubv(blue);
+//    glVertex3fv(v1);
+//    glVertex3fv(v4);
+//    glVertex3fv(v5);
+
+//    glVertex3fv(v3);
+//    glVertex3fv(v4);
+//    glVertex3fv(v5);
+//    glVertex3fv(v6);
+//    glVertex3fv(v7);
+
+
 
     glColor4ubv( red );
     glVertex3fv( v0 );
@@ -251,7 +277,7 @@ int main(int argc, char *argv[]) {
     SDL_GL_SetAttribute(SDL_GL_DEPTH_SIZE, 16);
     SDL_GL_SetAttribute(SDL_GL_DOUBLEBUFFER, 1);
 
-    flags = SDL_OPENGL | SDL_FULLSCREEN;
+    flags = SDL_OPENGL | SDL_NOFRAME;
 
     if(SDL_SetVideoMode(width, height, bpp, flags) == 0){
         printf("error3");
