@@ -5,7 +5,14 @@
 // To use OpenGL, uncomment the following line:
 //#include "SDL/SDL_opengl.h"
 
-static GLboolean should_rotate = GL_TRUE;
+static GLboolean should_rotate  = GL_TRUE;
+static GLboolean up             = GL_FALSE;
+static GLboolean down           = GL_FALSE;
+static GLboolean left           = GL_FALSE;
+static GLboolean right          = GL_FALSE;
+static float     spinMulti      = 1;
+static float     colourModifier = 1;
+
 static void quit(int errorCode){
     SDL_Quit();
     if(errorCode == 10){
@@ -29,6 +36,35 @@ static void handle_key_down(SDL_keysym* keysym){
             break;
         case SDLK_SPACE:
             should_rotate = !should_rotate;
+            break;
+
+        case SDLK_DOWN:
+            if(spinMulti >= .05){
+                spinMulti = spinMulti - .05;
+            }else {spinMulti = 0;}
+
+
+            down = !down;
+            break;
+        case SDLK_RIGHT:
+            if(colourModifier < .95){
+                colourModifier = colourModifier +.05;
+            } else{colourModifier = 1;}
+            right = !right;
+            break;
+        case SDLK_LEFT:
+            if(colourModifier >= .05){
+                colourModifier = colourModifier - .05;
+            } else{colourModifier = 0;}
+
+            left = !left;
+            break;
+        case SDLK_UP:
+            spinMulti = spinMulti + .05;
+
+
+            up = !up;
+
             break;
         default:
             break;
@@ -78,14 +114,18 @@ static void draw_screen( void )
     static GLfloat v5[] = {  1.0f, -1.0f, -1.0f };
     static GLfloat v6[] = {  1.0f,  1.0f, -1.0f };
     static GLfloat v7[] = { -1.0f,  1.0f, -1.0f };
-    static GLubyte red[]    = { 255,   0,   0, 255 };
-    static GLubyte green[]  = {   0, 255,   0, 255 };
-    static GLubyte blue[]   = {   0,   0, 255, 255 };
-    static GLubyte white[]  = { 255, 255, 255, 255 };
-    static GLubyte yellow[] = {   0, 255, 255, 255 };
+
+    GLubyte colorVal = (GLubyte)255*colourModifier;
+
+    printf("%d\n", colorVal);
+    static GLubyte red[]    = { colorVal,   0,   0, 255 };
+    static GLubyte green[]  = {   0, colorVal,   0, 255 };
+    static GLubyte blue[]   = {   0,   0, colorVal, 255 };
+    static GLubyte white[]  = { colorVal, colorVal, colorVal, 255 };
+    static GLubyte yellow[] = {   0, colorVal, colorVal, 255 };
     static GLubyte black[]  = {   0,   0,   0, 255 };
-    static GLubyte orange[] = { 255, 255,   0, 255 };
-    static GLubyte purple[] = { 255,   0, 255,   0 };
+    static GLubyte orange[] = { colorVal, colorVal,   0, 255 };
+    static GLubyte purple[] = { colorVal,   0, colorVal,   0 };
 
     /* Clear the color and depth buffers. */
     glClear( GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT );
@@ -99,10 +139,13 @@ static void draw_screen( void )
     /* Move down the z-axis. */
     glTranslatef( 0.0, 0.0, -5.0 );
 
-    glRotatef(angle, 0.0, 1.0, 0.0);
+    glRotatef(angle, 1.0, 1.0, 1.0);
 
+//    printf("the angle is %f;\nthe spinMulti is %f", angle, spinMulti);
     if(should_rotate){
-        if( ++angle > 360.0){
+
+        angle = angle + (1*spinMulti);
+        if( angle > 360.0){
             angle = 0.0f;
         }
     }
